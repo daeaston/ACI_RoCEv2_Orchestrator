@@ -1,0 +1,41 @@
+- name: Apply RoCEv2 QoS Config to ACI
+  hosts: apic
+  gather_facts: no
+
+  tasks:
+    - name: Login to APIC and retrieve cookie
+      uri:
+        url: "{{ apic_url }}/api/aaaLogin.json"
+        method: POST
+        body_format: json
+        headers:
+          Content-Type: application/json
+        body:
+          aaaUser:
+            attributes:
+              name: "{{ apic_username }}"
+              pwd: "{{ apic_password }}"
+        return_content: yes
+        status_code: 200
+        validate_certs: no
+      register: login_response
+
+    - name: Extract APIC auth cookie
+      set_fact:
+        apic_cookie: "{{ login_response.cookies['APIC-cookie'] }}"
+
+    - name: Configure QoS Class Level2 for RoCEv2
+      uri:
+        url: "{{ apic_url }}/api/node/mo/uni.xml"
+        method: POST
+        headers:
+          Content-Type: application/xml
+          Cookie: "APIC-cookie={{ apic_cookie }}"
+        body: |
+          <qosClass admin="enabled" dn="uni/infra/qosinst-default/class-level2" prio="level2">
+            <qosCong algo="wred" wredMinThreshold="40" wredMaxThreshold="60" wredProbability="0" ecn="enabled"/>
+            <qosPfcPol name="default" noDropCos="cos3" adminSt="yes" enableScope="fabric"/>
+          </qosClass>
+        body_format: raw
+        status_code: 200
+        validate_certs: no

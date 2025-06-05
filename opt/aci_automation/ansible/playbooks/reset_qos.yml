@@ -1,0 +1,48 @@
+---
+- name: Reset RoCEv2 QoS Config to Default
+  hosts: apic
+  gather_facts: no
+  vars_files:
+    - ../group_vars/apic.yml
+
+  tasks:
+    - name: Login to APIC and retrieve cookie
+      uri:
+        url: "{{ apic_url }}/api/aaaLogin.json"
+        method: POST
+        headers:
+          Content-Type: application/json
+        body: >
+          {
+            "aaaUser": {
+              "attributes": {
+                "name": "{{ apic_username }}",
+                "pwd": "{{ apic_password }}"
+              }
+            }
+          }
+        body_format: json
+        return_content: yes
+        status_code: 200
+        validate_certs: no
+      register: login_response
+
+    - name: Extract APIC cookie
+      set_fact:
+        apic_cookie: "{{ login_response.set_cookie }}"
+
+    - name: Reset QoS Level2 config (Tail-drop, PFC disabled)
+      uri:
+        url: "{{ apic_url }}/api/node/mo/uni.xml"
+        method: POST
+        headers:
+          Content-Type: application/xml
+          Cookie: "{{ apic_cookie }}"
+        body: |
+          <qosClass admin="enabled" dn="uni/infra/qosinst-default/class-level2" prio="level2">
+            <qosCong algo="tail-drop" ecn="disabled"/>
+            <qosPfcPol name="default" adminSt="no" noDropCos="" enableScope="fabric"/>
+          </qosClass>
+        body_format: raw
+        status_code: 200
+        validate_certs: no
