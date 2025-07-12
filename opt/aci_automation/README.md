@@ -81,7 +81,7 @@ Use the `.bat` launcher files to simplify execution (see below).
 
 | Variable         | Default Value                     |
 |------------------|-----------------------------------|
-| APIC URL         | `https://apic1.dcloud.cisco.com` |
+| APIC URL         | `https://apic1-a.corp.pseudoco.com` |
 | Username         | `admin`                          |
 | Password         | `C1sco12345`                     |
 | CoS (Class)      | `cos3`                           |
