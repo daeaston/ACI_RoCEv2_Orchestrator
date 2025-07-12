@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Static values for your demo/lab environment
-APIC_URL="https://apic1.dcloud.cisco.com"
+APIC_URL="https://apic1-a.corp.pseudoco.com"
 USERNAME="admin"
 PASSWORD="C1sco12345"
 
