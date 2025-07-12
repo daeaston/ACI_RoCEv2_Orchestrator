@@ -1,6 +1,6 @@
 import requests
 
-APIC_URL = "https://apic1.dcloud.cisco.com"
+APIC_URL = "https://apic1-a.corp.pseudoco.com"
 USERNAME = "admin"
 PASSWORD = "C1sco12345"
 
