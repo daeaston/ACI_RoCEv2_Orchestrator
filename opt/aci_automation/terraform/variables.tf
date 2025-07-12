@@ -12,5 +12,5 @@ variable "admin_password" {
 
 variable "apic_url" {
   type    = string
-  default = "https://apic1.dcloud.cisco.com"
+  default = "https://apic1-a.corp.pseudoco.com"
 }
